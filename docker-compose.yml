@@ -19,11 +19,10 @@ services:
       "--rpc-methods", "safe",
       "--unsafe-ws-external",
       "--validator",
-      "--name", "INSERT_YOUR_ID"
+      "--name", "$ID"
     ]
     healthcheck:
       timeout: 5s
-# If node setup takes longer then expected, you want to increase `interval` and `retries` number.
       interval: 30s
       retries: 5
 
@@ -31,27 +30,19 @@ services:
     depends_on:
       node:
         condition: service_healthy
-# Replace `snapshot-DATE` with latest release (like `snapshot-2022-apr-29`)
-    image: ghcr.io/subspace/farmer:snapshot-DATE
-# Un-comment following 2 lines to unlock farmer's RPC
-#    ports:
-#      - "127.0.0.1:9955:9955"
-# Instead of specifying volume (which will store data in `/var/lib/docker`), you can
-# alternatively specify path to the directory where files will be stored, just make
-# sure everyone is allowed to write there
+    image: ghcr.io/subspace/farmer:snapshot-2022-may-03
+   ports:
+     - "127.0.0.1:9955:9955"
     volumes:
       - farmer-data:/var/subspace:rw
-#      - /path/to/subspace-farmer:/var/subspace:rw
     restart: unless-stopped
     command: [
       "farm",
       "--custom-path", "/var/subspace",
       "--node-rpc-url", "ws://node:9944",
       "--ws-server-listen-addr", "0.0.0.0:9955",
-# Replace `WALLET_ADDRESS` with your Polkadot.js wallet address
-      "--reward-address", "WALLET_ADDRESS",
-# Replace `PLOT_SIZE` with plot size in gigabytes or terabytes, for instance 100G or 2T (but leave at least 10G of disk space for node)
-      "--plot-size", "PLOT_SIZE"
+      "--reward-address", "$WALLET_ADDRESS",
+      "--plot-size", "$PLOT_SIZE"
     ]
 volumes:
   node-data:

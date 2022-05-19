@@ -28,11 +28,10 @@ services:
 
   farmer:
     depends_on:
-      node:
-        condition: service_healthy
+      - node
     image: ghcr.io/subspace/farmer:snapshot-2022-may-03
-   ports:
-     - "127.0.0.1:9955:9955"
+    ports:
+      - "127.0.0.1:9955:9955"
     volumes:
       - farmer-data:/var/subspace:rw
     restart: unless-stopped
